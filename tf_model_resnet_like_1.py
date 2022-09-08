@@ -1,3 +1,5 @@
+from tensorflow.keras.models import Model
+
 class Net(Model):
     '''
     Архитектура развертка в линию. последовательно работает несколько блоков через skip connection
