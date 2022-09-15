@@ -28,6 +28,7 @@ pd.options.display.max_rows = 100
 print(pd.__version__)
 print(np.__version__)
 
+
 def get_credential(frmwork="neptune_team"):
     with open("credential.txt", "r") as container:
         for line in container:
@@ -64,9 +65,9 @@ def neptune_download(saved_name: str, local_path: str):
         project[saved_name].download(local_path)
         project.stop()
         print("Ok...")
-        logging.info(f'Downloaded: {local_path}')
+        logging.info(f"Downloaded: {local_path}")
     except:
-        logging.info(f'Error downloaded neptune: {file_path}')
+        logging.info(f"Error downloaded neptune: {local_path}")
 
 
 def load_model(folder_name: str, model_type="HOME", model_num=1):
@@ -95,7 +96,9 @@ def load_model(folder_name: str, model_type="HOME", model_num=1):
 
 def set_environment(local_folder="./"):
 
-    logging.basicConfig(level=logging.INFO, filename="./set_environment.log", filemode="w")
+    logging.basicConfig(
+        level=logging.INFO, filename="./set_environment.log", filemode="w"
+    )
     env_dict = {
         "data/team_time_dict": "team_time_dict.pickle",
         "data/team_league_dict": "team_league_dict.pickle",
