@@ -40,12 +40,14 @@ def get_credential(frmwork="neptune_team"):
 def unpack_tar(file_path: str):
     if file_path[-6:] == "tar.gz":
         if os.path.isfile(file_path):
-            print(f"Распаковываем {file_path}")
+            print(f"Распаковывание {file_path}")
             with tarfile.open(file_path, "r:gz") as targz:
                 targz.extractall()
+            logging.info(f"Unpacked: {file_path}")
             if os.path.isfile(file_path):
                 os.remove(file_path)
                 print(f"Aрхив удалён: {file_path}")
+                logging.info(f"Archive deleted: {file_path}")
             else:
                 print("Не получилось удалить архив после распаковки")
         else:
@@ -66,8 +68,8 @@ def neptune_download(saved_name: str, local_path: str):
         project.stop()
         print("Ok...")
         logging.info(f"Downloaded: {local_path}")
-    except:
-        logging.info(f"Error downloaded neptune: {local_path}")
+    except Exception:
+        logging.error(f"Downloaded neptune: {local_path}")
 
 
 def load_model(folder_name: str, model_type="HOME", model_num=1):
@@ -77,7 +79,7 @@ def load_model(folder_name: str, model_type="HOME", model_num=1):
     :param model_type:
     :return:
     """
-    PATH_TO_MODEL = folder_name + "model.tar.gz"
+    path_to_model = folder_name + "model.tar.gz"
     _, api_key = get_credential()
     neptune_model = f"FOOT-" + model_type
     neptune_model_version = f"FOOT-" + model_type + "-" + str(model_num)
@@ -87,11 +89,15 @@ def load_model(folder_name: str, model_type="HOME", model_num=1):
         api_token=api_key,
         version=neptune_model_version,
     )
-    print(f"Загружаем модель {model_type} n.{model_num}")
-    model_version["model"].download(PATH_TO_MODEL)
-    model_version.stop()
+    try:
+        print(f"Загружаем модель {model_type} n.{model_num}")
+        model_version["model"].download(path_to_model)
+        model_version.stop()
+        logging.info(f"Downloaded: {path_to_model}")
+    except Exception:
+        logging.error(f"Downloaded neptune: {path_to_model}")
     print(f"Распаковываем модель {model_type} n.{model_num}")
-    unpack_tar(PATH_TO_MODEL)
+    unpack_tar(path_to_model)
 
 
 def set_environment(local_folder="./"):
