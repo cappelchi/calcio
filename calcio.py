@@ -4,10 +4,6 @@
  2. Обновить модель
  3. Получить предикт
  4. Обновить результаты
-
-Установки
-gensim=4.2.0
-neptune-client
 """
 
 import pandas as pd
@@ -37,11 +33,17 @@ def get_credential(frmwork="neptune_team"):
                 return login, psw
 
 
-def unpack_tar(file_path: str):
+def unpack_tar(file_path: str) -> list:
+    """
+    :param file_path:
+    :return:list
+    """
+    untar_list = []
     if file_path[-6:] == "tar.gz":
         if os.path.isfile(file_path):
             print(f"Распаковывание {file_path}")
             with tarfile.open(file_path, "r:gz") as targz:
+                untar_list = [nms for nms in targz.getnames()]
                 targz.extractall()
             logging.info(f"Unpacked: {file_path}")
             if os.path.isfile(file_path):
@@ -54,6 +56,7 @@ def unpack_tar(file_path: str):
             print(f"Файл {file_path} не существует")
     else:
         print(f"Файл {file_path} не имеет расширение tar.gz")
+    return untar_list
 
 
 def neptune_download(saved_name: str, local_path: str):
@@ -72,12 +75,11 @@ def neptune_download(saved_name: str, local_path: str):
         logging.error(f"Downloaded neptune: {local_path}")
 
 
-def load_model(folder_name: str, model_type="HOME", model_num=1):
+def load_model(folder_name: str, model_type="HOME", model_num=1) -> list:
     """
     :param folder_name:
     :param model_num:
     :param model_type:
-    :return:
     """
     path_to_model = folder_name + "model.tar.gz"
     _, api_key = get_credential()
@@ -97,14 +99,31 @@ def load_model(folder_name: str, model_type="HOME", model_num=1):
     except Exception:
         logging.error(f"Downloaded neptune: {path_to_model}")
     print(f"Распаковываем модель {model_type} n.{model_num}")
-    unpack_tar(path_to_model)
+    return unpack_tar(path_to_model)
+
+
+def create_environment_config(config_dict: dict):
+    if os.path.isfile("./config.yaml"):
+        with open("./config.yaml", "r") as conf:
+            current_config = yaml.load(conf, Loader=yaml.SafeLoader)
+        for key, value in config_dict.items():
+            current_config[key] = value
+        with open("./config.yaml", "w") as conf:
+            yaml.dump(current_config, conf)
+    else:
+        with open("./config.yaml", "w") as conf:
+            yaml.dump(config_dict, conf)
 
 
 def set_environment(local_folder="./"):
-
+    # Развертывание окружения
+    # 1. Загружаем все словари и эмбеддинги word2 vec
+    # 2. Распаковываем word2vec
+    # 3. Загружаем версию 1 модели NN для HOME предикшн
     logging.basicConfig(
         level=logging.INFO, filename="./set_environment.log", filemode="w"
     )
+    config_dict = {}
     env_dict = {
         "data/team_time_dict": "team_time_dict.pickle",
         "data/team_league_dict": "team_league_dict.pickle",
@@ -120,9 +139,27 @@ def set_environment(local_folder="./"):
         saved_name, file_name = env
         print(f"Скачиваем: {file_name}...{cnt + 1}/{len(env_dict)}")
         neptune_download(saved_name, local_folder + file_name)
+        if saved_name != "data/word2vec_220811":
+            create_environment_config(
+                {saved_name.split("/")[1]: local_folder + file_name}
+            )
 
-    unpack_tar(local_folder + env_dict["data/word2vec_220811"])
-    load_model(folder_name="./", model_num=1, model_type="HOME")
+    create_environment_config(
+        {"word2vec": unpack_tar(local_folder + env_dict["data/word2vec_220811"])}
+    )
+    model_num = 1
+    model_type = "HOME"
+    create_environment_config(
+        {
+            "tf_model": load_model(
+                folder_name="./", model_num=model_num, model_type=model_type
+            )
+        }
+    )
+
+
+def update_word2vec():
+    assert 1 == 1
 
 
 if __name__ == "__main__":
