@@ -80,5 +80,5 @@ def set_environment(destination_folder = "../../"):
 
 
 
-#if __name__ == "__main__":
-#    set_environment(local_folder="./")
+if __name__ == "__main__":
+    set_environment(destination_folder = "../../")

@@ -4,6 +4,7 @@ import logging
 import yaml
 import neptune.new as neptune
 
+
 def get_credential(frmwork="neptune_team"):
     with open("../../credential.txt", "r") as container:
         for line in container:
@@ -33,8 +34,9 @@ def set_config(config_dict, config_path="../../config.yaml") -> dict:
     else:
         print("Нет конфига, запустите развёртывание оеружения")
 
-def create_environment_config(config_dict: dict, destination_folder = '../../'):
-    config_path = destination_folder + 'config.yaml'
+
+def create_environment_config(config_dict: dict, destination_folder="../../"):
+    config_path = destination_folder + "config.yaml"
     if os.path.isfile(config_path):
         with open(config_path, "r") as conf:
             current_config = yaml.load(conf, Loader=yaml.SafeLoader)
@@ -45,6 +47,7 @@ def create_environment_config(config_dict: dict, destination_folder = '../../'):
     else:
         with open(config_path, "w") as conf:
             yaml.dump(config_dict, conf)
+
 
 def unpack_tar(file_path: str) -> list:
     """
@@ -70,6 +73,7 @@ def unpack_tar(file_path: str) -> list:
     else:
         print(f"Файл {file_path} не имеет расширение tar.gz")
     return untar_list
+
 
 def neptune_download(saved_name: str, file_path: str):
     """
