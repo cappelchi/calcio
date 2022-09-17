@@ -2,7 +2,7 @@
 необходимо в корневу папку положить файл: credential.txt
 1. развернуть окружение по умолчанию в папку ./: <br>
 
-calcio --set_environment
+calcio --set_environment<br>
 calcio --set_environment=./calcio_folder
 
 2. выбрать модель для предикта (по умолчанию HOME версия 2):
