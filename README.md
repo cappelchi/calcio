@@ -20,12 +20,12 @@ calcio --update_embedding=word2vec_220811
     - folder: /path/to/folder
     - file: /path/to/file.csv<br>
 
-calcio --predict --folder=/path/to/folder
+calcio --predict --folder=/path/to/folder<br>
 calcio --predict --file=/path/to/file.csv
 
 5. запустить обновление результатов
     - folder: /path/to/folder
     - file: /path/to/file.csv<br>
 
-calcio --update-results --folder=/path/to/folder
+calcio --update-results --folder=/path/to/folder<br>
 calcio --update-results --file=/path/to/file.csv
