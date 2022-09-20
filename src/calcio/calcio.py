@@ -12,7 +12,7 @@ import click
 @click.option('--folder', '-f', default = './', help = 'Define main folder')
 @click.option('--model_type', '-m', default = 'HOME', help = 'Define model type HOME, DRAW, AWAY')
 @click.option('--version', '-v', default = '1', help = 'Define model version 1, 2, 3, ...')
-@click.option('--w2v_name', '-v', default = 'word2vec_220811', help = 'Define model version 1, 2, 3, ...')
+@click.option('--w2v_name', '-w', default = 'word2vec_220811', help = 'Define model version 1, 2, 3, ...')
 def main(**params):
     if params['command'] == 'set_environment':
         set_environment(destination_folder = params['folder'])
