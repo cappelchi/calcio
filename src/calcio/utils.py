@@ -1,6 +1,7 @@
 import os
 import tarfile
 import logging
+import pickle
 import yaml
 import neptune.new as neptune
 
@@ -60,7 +61,7 @@ def unpack_tar(file_path: str) -> list:
         if os.path.isfile(file_path):
             print(f"Распаковывание {file_path}")
             with tarfile.open(file_path, "r:gz") as targz:
-                untar_list = [nms for nms in targz.getnames()]
+                untar_list = [archive_folder + '/'.join(nms.split('/')[1:]) for nms in targz.getnames()]
                 targz.extractall(path = archive_folder)
             logging.info(f"Unpacked: {file_path}")
             if os.path.isfile(file_path):
@@ -117,3 +118,15 @@ def load_model(folder_name: str, model_type="HOME", model_num=1) -> list:
         logging.error(f"Downloaded neptune: {path_to_model}")
     print(f"Распаковываем модель {model_type} n.{model_num}")
     return unpack_tar(path_to_model)
+
+def load_dicts(main_folder):
+    dicts_list = []
+    dicts_names_list = ['team_time_dict', 'team_league_dict', 'season_dict', 'idx_home_current_dict',
+                  'idx_away_current_dict', 'idx_home_dict', 'idx_away_dict']
+    for single_dict in dicts_names_list:
+        with open(main_folder + single_dict + '.pickle', 'rb') as pkl:
+            dicts_list.append(pickle.load(pkl))
+
+    return dicts_list
+
+

@@ -16,7 +16,7 @@ import click
 def main(**params):
     if params['command'] == 'set_environment':
         set_environment(destination_folder = params['folder'])
-    elif params['command'] = 'change_model':
+    elif params['command'] == 'change_model':
         update_model(params['model_type'], params['version'])
     elif params['command'] == 'load_w2v':
         update_word2vec(saved_name = params['w2v-name'])

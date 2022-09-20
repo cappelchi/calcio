@@ -17,7 +17,6 @@ import pickle
 from gensim.models import KeyedVectors
 from glob import glob
 from tqdm import tqdm
-from tensorflow.keras.models import load_model
 
 from utils import create_environment_config
 from utils import unpack_tar
@@ -30,7 +29,7 @@ print(pd.__version__)
 print(np.__version__)
 
 
-def set_environment(destination_folder = "../../"):
+def set_environment(destination_folder="../../"):
     # Развертывание окружения
     # 1. Загружаем все словари и эмбеддинги word2 vec
     # 2. Распаковываем word2vec
@@ -49,9 +48,7 @@ def set_environment(destination_folder = "../../"):
         "data/word2vec_220811": "w2v_model.tar.gz",
     }
 
-    create_environment_config(
-        {'destination_folder': destination_folder}
-    )
+    create_environment_config({"destination_folder": destination_folder})
     for cnt, env in enumerate(env_dict.items()):
         saved_name, file_name = env
         print(f"Скачиваем: {file_name}...{cnt + 1}/{len(env_dict)}")
@@ -69,16 +66,15 @@ def set_environment(destination_folder = "../../"):
     create_environment_config(
         {
             "tf_model": load_model(
-                folder_name = destination_folder,
+                folder_name=destination_folder,
                 model_num=model_num,
-                model_type=model_type
+                model_type=model_type,
             ),
-            'model_type':'HOME',
-            'model_no':'1'
+            "model_type": "HOME",
+            "model_no": "1",
         }
     )
 
 
-
 if __name__ == "__main__":
-    set_environment(destination_folder = "../../")
+    set_environment(destination_folder="../../")
