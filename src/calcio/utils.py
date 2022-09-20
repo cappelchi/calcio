@@ -54,13 +54,14 @@ def unpack_tar(file_path: str) -> list:
     :param file_path:
     :return:list
     """
+    archive_folder = file_path.replace(file_path.split('/')[-1], '')
     untar_list = []
     if file_path[-6:] == "tar.gz":
         if os.path.isfile(file_path):
             print(f"Распаковывание {file_path}")
             with tarfile.open(file_path, "r:gz") as targz:
                 untar_list = [nms for nms in targz.getnames()]
-                targz.extractall()
+                targz.extractall(path = archive_folder)
             logging.info(f"Unpacked: {file_path}")
             if os.path.isfile(file_path):
                 os.remove(file_path)
