@@ -1,6 +1,7 @@
 from set_environment import set_environment
 from update_model import update_model
 from update_word2vec import update_word2vec
+from predict import predict
 import click
 
 @click.command()
@@ -20,6 +21,8 @@ def main(**params):
         update_model(params['model_type'], params['version'])
     elif params['command'] == 'load_w2v':
         update_word2vec(saved_name = params['w2v-name'])
+    elif params['command'] == 'predict':
+        predict(params['folder'])
 
 if __name__ == "__main__":
     main()

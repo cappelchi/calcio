@@ -1,8 +1,11 @@
+import os.path
+
 from tensorflow.keras.models import load_model
 from gensim.models import KeyedVectors
 from utils import get_environment_config
 from utils import load_dicts
 import pandas as pd
+import numpy as np
 import functools
 from glob import glob
 
@@ -82,7 +85,7 @@ def predict(new_csv: str):
     data_df.AwayId = data_df.AwayId.astype(int)
     data_df[~data_df.Season.isin(season_dict)].to_csv(new_csv + "reject_by_season.rej")
     data_df = data_df[data_df.Season.isin(season_dict)]
-    print("Фильтр сезнов: ", len(data_df))
+    print("Фильтр сезнов осталось: ", len(data_df))
     data_df.loc[:, "Season"] = [season_dict[seas] for seas in data_df.Season]
     valid_match = [
         (str(hid) + ":" + season in team_league_dict)
@@ -93,7 +96,7 @@ def predict(new_csv: str):
         new_csv + "reject_by_match_token.rej"
     )
     data_df = data_df[valid_match]
-    print("Фильтр валидности матчей: ", len(data_df))
+    print("Фильтр токенизации истории, осталось: ", len(data_df))
     data_df.loc[:, "resident_league_home"] = [
         team_league_dict[str(rlh) + ":" + seas]
         for rlh, seas in zip(data_df.HomeId, data_df.Season)
@@ -131,7 +134,7 @@ def predict(new_csv: str):
         new_csv + "reject_by_current_match_token.rej"
     )
     data_df = data_df[valid_idx]
-    print("Фильтр valid_idx: ", len(data_df))
+    print("Фильтр токенезации матча, осталось: ", len(data_df))
     data_df["home_idx_current"] = [
         idx_home_current_dict[home + ":" + away + ":" + str(rest_home)]
         for home, away, rest_home in zip(
@@ -173,17 +176,20 @@ def predict(new_csv: str):
              'away_input_4',
              'away_input_5']
 
-    print("Осталось на предикт матчей: ", len(data_df))
-    word_vectors = main_folder + get_environment_config()['word2vec'][1]
+    word_vectors = get_environment_config()['word2vec'][1].replace('.vectors.npy', '')
+    print('Загружаю вектора w2v: ', word_vectors)
     wv = KeyedVectors.load(word_vectors, mmap='r')
     idx_arr = np.zeros(max(wv.key_to_index) + 1)
     for key, value in wv.key_to_index.items():
         idx_arr[key] = value + 1
-    X_input = idx_arr[data_df[names].values].astype(int)
-    model_path = main_folder + get_environment_config()['tf_model'][0]
+
+    X_input = idx_arr[data_df[names].values].astype(np.int64)
+    model_path = get_environment_config()['tf_model'][0]
     model = load_model(model_path)
+
     data_df['predict'] = model.predict(X_input)
     data_df.to_csv(new_csv + 'predict.out')
+    print('Предикт посчитан и загружен в ' + new_csv + 'predict.out')
 
 if __name__ == "__main__":
     predict("../../new_csv/")

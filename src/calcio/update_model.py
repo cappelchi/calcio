@@ -21,4 +21,4 @@ def update_model(model_type: str, model_num: str):
 
 
 if __name__ == "__main__":
-    update_model(model_type = 'HOME', model_num = '9')
+    update_model(model_type = 'HOME', model_num = '1')
