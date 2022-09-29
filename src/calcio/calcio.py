@@ -2,6 +2,7 @@ from set_environment import set_environment
 from update_model import update_model
 from update_word2vec import update_word2vec
 from predict import predict
+from update_results import update_results
 import click
 
 @click.command()
@@ -14,6 +15,8 @@ import click
 @click.option('--model_type', '-m', default = 'HOME', help = 'Define model type HOME, DRAW, AWAY')
 @click.option('--version', '-v', default = '1', help = 'Define model version 1, 2, 3, ...')
 @click.option('--w2v_name', '-w', default = 'word2vec_220811', help = 'Define model version 1, 2, 3, ...')
+@click.option('--start_date', '-w', default = '', help = 'Define start date of predict or update')
+@click.option('--end_date', '-w', default = '', help = 'Define end date of predict or update')
 def main(**params):
     if params['command'] == 'set_environment':
         set_environment(destination_folder = params['folder'])
@@ -23,6 +26,8 @@ def main(**params):
         update_word2vec(saved_name = params['w2v-name'])
     elif params['command'] == 'predict':
         predict(params['folder'])
+    elif params['command'] == 'update_results':
+        update_results(params['folder'])
 
 if __name__ == "__main__":
     main()

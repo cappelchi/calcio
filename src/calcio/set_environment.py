@@ -38,7 +38,7 @@ def set_environment(destination_folder="../../"):
         level=logging.INFO, filename="../../set_environment.log", filemode="w"
     )
     env_dict = {
-        "data/team_time_dict": "team_time_dict.pickle",
+        "data/team_GId_dict": "team_GId_dict.pickle",
         "data/team_league_dict": "team_league_dict.pickle",
         "data/season_dict": "season_dict.pickle",
         "data/idx_home_current_dict": "idx_home_current_dict.pickle",
