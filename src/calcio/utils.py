@@ -10,7 +10,8 @@ from tqdm import tqdm
 
 
 def get_credential(frmwork="neptune_team"):
-    with open("../../credential.txt", "r") as container:
+    token_path = os.path.realpath('./calcio/credential.txt')
+    with open(token_path, "r") as container:
         for line in container:
             if frmwork in line:
                 login, psw = line.split(" ")[1], line.split(" ")[2].split("\n")[0]
