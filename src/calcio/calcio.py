@@ -25,9 +25,9 @@ def main(**params):
     elif params['command'] == 'load_w2v':
         update_word2vec(saved_name = params['w2v-name'])
     elif params['command'] == 'predict':
-        predict(params['folder'], params['start-date']. params['end-date'])
+        predict(params['folder'], params['start-date'], params['end-date'])
     elif params['command'] == 'update_results':
-        update_results(params['folder'] params['start-date']. params['end-date'])
+        update_results(params['folder'], params['start-date'], params['end-date'])
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,13 @@
+import pandas as pd
+import numpy as np
+import logging
+from os.path import realpath
+from utils import create_environment_config
+from utils import unpack_tar
+from utils import neptune_download
+from utils import load_model
+
+
 """
 Команды скрипта
  1. Развернуть окружение
@@ -6,22 +16,6 @@
  4. Обновить результаты
 """
 
-import pandas as pd
-import numpy as np
-import neptune.new as neptune
-import os
-import tarfile
-import logging
-import yaml
-import pickle
-from gensim.models import KeyedVectors
-from glob import glob
-from tqdm import tqdm
-
-from utils import create_environment_config
-from utils import unpack_tar
-from utils import neptune_download
-from utils import load_model
 
 pd.options.display.max_columns = 50
 pd.options.display.max_rows = 100
@@ -34,8 +28,12 @@ def set_environment(destination_folder="../../"):
     # 1. Загружаем все словари и эмбеддинги word2 vec
     # 2. Распаковываем word2vec
     # 3. Загружаем версию 1 модели NN для HOME предикшн
+    destination_folder = realpath(destination_folder) + '/'
+
     logging.basicConfig(
-        level=logging.INFO, filename="../../set_environment.log", filemode="w"
+        level=logging.INFO,
+        filename=destination_folder + "set_environment.log",
+        filemode="w",
     )
     env_dict = {
         "data/team_GId_dict": "team_GId_dict.pickle",
@@ -48,7 +46,9 @@ def set_environment(destination_folder="../../"):
         "data/word2vec_220811": "w2v_model.tar.gz",
     }
 
-    create_environment_config({"destination_folder": destination_folder})
+    create_environment_config(
+        {"destination_folder": destination_folder}, destination_folder
+    )
     for cnt, env in enumerate(env_dict.items()):
         saved_name, file_name = env
         print(f"Скачиваем: {file_name}...{cnt + 1}/{len(env_dict)}")
@@ -72,9 +72,10 @@ def set_environment(destination_folder="../../"):
             ),
             "model_type": "HOME",
             "model_no": "1",
-        }
+        },
+        destination_folder,
     )
 
 
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 #    set_environment(destination_folder="../../")
