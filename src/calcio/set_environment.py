@@ -7,7 +7,6 @@ from utils import unpack_tar
 from utils import neptune_download
 from utils import load_model
 
-
 """
 Команды скрипта
  1. Развернуть окружение
@@ -47,7 +46,7 @@ def set_environment(destination_folder="../../"):
     }
 
     create_environment_config(
-        {"destination_folder": destination_folder}, destination_folder
+        {"destination_folder": destination_folder}
     )
     for cnt, env in enumerate(env_dict.items()):
         saved_name, file_name = env
@@ -72,8 +71,7 @@ def set_environment(destination_folder="../../"):
             ),
             "model_type": "HOME",
             "model_no": "1",
-        },
-        destination_folder,
+        }
     )
 
 

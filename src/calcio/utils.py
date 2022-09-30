@@ -7,7 +7,7 @@ import pandas as pd
 import yaml
 import neptune.new as neptune
 from tqdm import tqdm
-
+from calcio import CONFIG_PATH
 
 def get_credential(frmwork="neptune_team"):
     token_path = os.path.realpath('./calcio/credential.txt')
@@ -18,8 +18,8 @@ def get_credential(frmwork="neptune_team"):
                 return login, psw
 
 
-def get_environment_config(config_path="../../config.yaml") -> dict:
-    if os.path.isfile(config_path):
+def get_environment_config() -> dict:
+    if os.path.isfile(CONFIG_PATH):
         with open(config_path, "r") as conf:
             current_config = yaml.load(conf, Loader=yaml.SafeLoader)
         return current_config
@@ -29,28 +29,27 @@ def get_environment_config(config_path="../../config.yaml") -> dict:
 
 
 def set_config(config_dict, config_path="../../config.yaml") -> dict:
-    if os.path.isfile(config_path):
+    if os.path.isfile(CONFIG_PATH):
         with open(config_path, "r") as conf:
             current_config = yaml.load(conf, Loader=yaml.SafeLoader)
         for key, value in config_dict.items():
             current_config[key] = value
-        with open(config_path, "w") as conf:
+        with open(CONFIG_PATH, "w") as conf:
             yaml.dump(current_config, conf)
     else:
         print("Нет конфига, запустите развёртывание оеружения")
 
 
-def create_environment_config(config_dict: dict, destination_folder="../../"):
-    config_path = destination_folder + "config.yaml"
-    if os.path.isfile(config_path):
-        with open(config_path, "r") as conf:
+def create_environment_config(config_dict: dict):
+    if os.path.isfile(CONFIG_PATH):
+        with open(CONFIG_PATH, "r") as conf:
             current_config = yaml.load(conf, Loader=yaml.SafeLoader)
         for key, value in config_dict.items():
             current_config[key] = value
-        with open(config_path, "w") as conf:
+        with open(CONFIG_PATH, "w") as conf:
             yaml.dump(current_config, conf)
     else:
-        with open(config_path, "w") as conf:
+        with open(CONFIG_PATH, "w") as conf:
             yaml.dump(config_dict, conf)
 
 
@@ -123,7 +122,6 @@ def load_model(folder_name: str, model_type="HOME", model_num=1) -> list:
         logging.info(f"Downloaded: {path_to_model}")
     except Exception:
         logging.error(f"Downloaded neptune: {path_to_model}")
-    print(f"Распаковываем модель {model_type} n.{model_num}")
     return unpack_tar(path_to_model)
 
 

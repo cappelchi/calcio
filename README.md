@@ -10,8 +10,8 @@ calcio --set_environment -f ./calcio_folder
     - тип:  HOME, DRAW, AWAY
     - версия: 1, 2, ...<br>
 
-calcio --update_model --model_type AWAY --version 10
-calcio --update_model -m AWAY -v 10
+calcio --change_model --model_type AWAY --version 10
+calcio --change_model -m AWAY -v 10
 
 3. поменять эмбеддинги word2vec:
     - name: word2vec_220811<br>
