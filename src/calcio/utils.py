@@ -7,7 +7,7 @@ import pandas as pd
 import yaml
 import neptune.new as neptune
 from tqdm import tqdm
-from calcio import CONFIG_PATH
+CONFIG_PATH = './calcio/config.yaml'
 
 def get_credential(frmwork="neptune_team"):
     token_path = os.path.realpath('./calcio/credential.txt')

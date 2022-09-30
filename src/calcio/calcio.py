@@ -4,7 +4,6 @@ from update_word2vec import update_word2vec
 from predict import predict
 from update_results import update_results
 import click
-CONFIG_PATH = './calcio/config.yaml'
 
 @click.command()
 @click.option('--set_environment', 'command', flag_value = 'set_environment')
