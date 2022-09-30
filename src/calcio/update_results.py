@@ -6,13 +6,13 @@ from utils import set_league_and_rest
 from utils import prepare_for_update
 from utils import tokenize_result
 from utils import update_matches_connections
+import pickle
 
 def update_results(folder:str, start_date:str, end_date:str):
     '''
     :param folder:
     :param start_date:
     :param end_date:
-    :return:
     '''
 
     main_folder = get_environment_config()["destination_folder"]
@@ -24,11 +24,12 @@ def update_results(folder:str, start_date:str, end_date:str):
     data_df = prepare_for_update(data_df)
     data_df = tokenize_result(data_df)
     updated_dict = update_matches_connections(data_df)
-    print(update_dict[58313])
+    with open(main_folder + 'tmp.pickle', 'wb') as pkl:
+        pickle.dump(updated_dict, pkl, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-if __name__ == "__main__":
-    folder = 'new_csv/'
-    start_date = '20220701'
-    end_date = '20220731'
-    update_results(folder, start_date, end_date)
+#if __name__ == "__main__":
+#    folder = 'new_csv/'
+#    start_date = '20220701'
+#    end_date = '20220731'
+#    update_results(folder, start_date, end_date)

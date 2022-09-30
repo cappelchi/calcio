@@ -23,12 +23,12 @@ calcio --load_w2v --w word2vec_220811
     - folder: /path/to/folder
     - file: /path/to/file.csv<br>
 
-calcio --predict --folder /path/to/folder<br>
+calcio --predict --folder /path/to/folder --start-date --end-date<br>
 calcio --predict --file /path/to/file.csv
 
 5. запустить обновление результатов
     - folder: /path/to/folder
     - file: /path/to/file.csv<br>
 
-calcio --update-results --folder /path/to/folder<br>
+calcio --update-results --folder /path/to/folder --start-date --end-date<br>
 calcio --update-results --file /path/to/file.csv

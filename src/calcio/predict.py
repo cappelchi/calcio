@@ -1,16 +1,12 @@
-import os.path
-
 from tensorflow.keras.models import load_model
 from gensim.models import KeyedVectors
 from utils import get_environment_config
-from utils import load_dicts
 from utils import load_dataframe
 from utils import apply_token_filter
 from utils import apply_season_dict
 from utils import set_league_and_rest
 from utils import set_current_idx
 from utils import idx_recursive
-import pandas as pd
 import numpy as np
 import pickle
 
@@ -19,8 +15,12 @@ import pickle
 
 
 
-def predict(new_csv: str, start_date, end_date):
-
+def predict(new_csv: str, start_date:str, end_date:str):
+    '''
+    :param new_csv:
+    :param start_date:
+    :param end_date:
+    '''
     main_folder = get_environment_config()["destination_folder"]
     data_df = load_dataframe(main_folder  + new_csv, start_date = start_date, end_date = end_date)
     print("Загрузилось матчей: ", len(data_df))
@@ -72,9 +72,9 @@ def predict(new_csv: str, start_date, end_date):
     print('Предикт посчитан и загружен в ' + main_folder  + new_csv + 'predict.out')
     ##################################
 
-if __name__ == "__main__":
-    pd.options.display.max_columns = 50
-    folder = 'new_csv/'
-    start_date = '20220701'
-    end_date = '20220731'
-    predict(folder, start_date, end_date)
+#if __name__ == "__main__":
+#    pd.options.display.max_columns = 50
+#    folder = 'new_csv/'
+#    start_date = '20220701'
+#    end_date = '20220731'
+#    predict(folder, start_date, end_date)

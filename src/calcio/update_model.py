@@ -20,5 +20,5 @@ def update_model(model_type: str, model_num: str):
         print('Основная директория отсутствует в конфиге')
 
 
-if __name__ == "__main__":
-    update_model(model_type = 'HOME', model_num = '1')
+#if __name__ == "__main__":
+#    update_model(model_type = 'HOME', model_num = '1')
