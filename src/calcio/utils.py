@@ -7,6 +7,7 @@ import pandas as pd
 import yaml
 import neptune.new as neptune
 from tqdm import tqdm
+pd.options.mode.chained_assignment = None
 CONFIG_PATH = './calcio/config.yaml'
 
 def get_credential(frmwork="neptune_team"):
@@ -24,11 +25,11 @@ def get_environment_config() -> dict:
             current_config = yaml.load(conf, Loader=yaml.SafeLoader)
         return current_config
     else:
-        print("Нет конфига, запустите развёртывание оеружения")
+        print("Нет конфига, запустите развёртывание окружения")
         return {}
 
 
-def set_config(config_dict, config_path="../../config.yaml") -> dict:
+def set_config(config_dict:dict) -> dict:
     if os.path.isfile(CONFIG_PATH):
         with open(CONFIG_PATH, "r") as conf:
             current_config = yaml.load(conf, Loader=yaml.SafeLoader)
@@ -37,7 +38,7 @@ def set_config(config_dict, config_path="../../config.yaml") -> dict:
         with open(CONFIG_PATH, "w") as conf:
             yaml.dump(current_config, conf)
     else:
-        print("Нет конфига, запустите развёртывание оеружения")
+        print("Нет конфига, запустите развёртывание окружения")
 
 
 def create_environment_config(config_dict: dict):
@@ -79,7 +80,7 @@ def unpack_tar(file_path: str) -> list:
         else:
             print(f"Файл {file_path} не существует")
     else:
-        print(f"Файл {file_path} не имеет расширение tar.gz")
+        print(f"Файл {file_path} не имеет расширения tar.gz")
     return untar_list
 
 
@@ -383,6 +384,7 @@ def tokenize_result(data_df: pd.DataFrame) -> pd.DataFrame:
     data_df["away_idx"] = data_df["away_idx"].astype(int)
     #####################################################
     zero_token = (data_df["home_idx"] == 0).sum() + (data_df["away_idx"] == 0).sum()
+    print('Токенизировано в 0:', zero_token)
     return data_df
 
 
@@ -555,5 +557,5 @@ def update_matches_connections(data_df: pd.DataFrame) -> dict:
             )
 
     print("\n")
-    print("zero diff = ", zero_diff)
+    print('Сортировка по времени: ', zero_diff)
     return team_GId_dict

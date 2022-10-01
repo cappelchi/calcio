@@ -15,7 +15,7 @@ from utils import load_model
  4. Обновить результаты
 """
 
-def set_environment(destination_folder="../../"):
+def set_environment(destination_folder:str):
     # Развертывание окружения
     # 1. Загружаем все словари и эмбеддинги word2 vec
     # 2. Распаковываем word2vec
@@ -67,6 +67,3 @@ def set_environment(destination_folder="../../"):
         }
     )
 
-
-# if __name__ == "__main__":
-#    set_environment(destination_folder="../../")

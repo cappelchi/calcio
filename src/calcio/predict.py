@@ -18,7 +18,7 @@ def predict(new_csv: str, start_date:str, end_date:str):
     :param end_date:
     '''
     main_folder = get_environment_config()["destination_folder"]
-    data_df = load_dataframe(main_folder  + new_csv, start_date = start_date, end_date = end_date)
+    data_df = load_dataframe(new_csv, start_date = start_date, end_date = end_date)
     print("Загрузилось матчей: ", len(data_df))
     data_df = apply_season_dict(data_df)
     data_df = apply_token_filter(data_df)
@@ -64,13 +64,6 @@ def predict(new_csv: str, start_date:str, end_date:str):
     model_path = get_environment_config()['tf_model'][0]
     model = load_model(model_path)
     data_df['predict'] = model.predict(X_input)
-    data_df.to_csv(main_folder  + new_csv + 'predict.out')
-    print('Предикт посчитан и загружен в ' + main_folder  + new_csv + 'predict.out')
+    data_df.to_csv(new_csv + 'predict.out')
+    print('Предикт посчитан и загружен в '  + new_csv + 'predict.out')
     ##################################
-
-#if __name__ == "__main__":
-#    pd.options.display.max_columns = 50
-#    folder = 'new_csv/'
-#    start_date = '20220701'
-#    end_date = '20220731'
-#    predict(folder, start_date, end_date)

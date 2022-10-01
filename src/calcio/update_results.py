@@ -27,9 +27,3 @@ def update_results(folder:str, start_date:str, end_date:str):
     with open(main_folder + 'tmp.pickle', 'wb') as pkl:
         pickle.dump(updated_dict, pkl, protocol=pickle.HIGHEST_PROTOCOL)
 
-
-#if __name__ == "__main__":
-#    folder = 'new_csv/'
-#    start_date = '20220701'
-#    end_date = '20220731'
-#    update_results(folder, start_date, end_date)
