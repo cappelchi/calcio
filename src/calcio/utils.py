@@ -151,6 +151,8 @@ def load_dataframe(folder: str, start_date="", end_date="") -> pd.DataFrame:
     :param end_date:
     :return pandas Dataframe:
     """
+    if end_date == '':
+        end_date = start_date
     data_csv_list = [
         folder + str(dd).replace("-", "") + ".csv"
         for dd in pd.date_range(start=start_date, end=end_date).date
