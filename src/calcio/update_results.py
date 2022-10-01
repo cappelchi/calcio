@@ -24,6 +24,7 @@ def update_results(folder:str, start_date:str, end_date:str):
     data_df = prepare_for_update(data_df)
     data_df = tokenize_result(data_df)
     updated_dict = update_matches_connections(data_df)
-    with open(main_folder + 'tmp.pickle', 'wb') as pkl:
+    print('Сохраняется словарь истории матчей...')
+    with open(main_folder + 'team_GId_dict.pickle', 'wb') as pkl:
         pickle.dump(updated_dict, pkl, protocol=pickle.HIGHEST_PROTOCOL)
 
