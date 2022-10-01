@@ -1,7 +1,7 @@
-gensim=4.2.0
+gensim==4.2.0
 neptune-client
-pandas=1.4.4
-numpy=1.23.3
+pandas
+numpy
 click
 tqdm
 tensorflow

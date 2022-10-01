@@ -20,7 +20,7 @@ def get_credential(frmwork="neptune_team"):
 
 def get_environment_config() -> dict:
     if os.path.isfile(CONFIG_PATH):
-        with open(config_path, "r") as conf:
+        with open(CONFIG_PATH, "r") as conf:
             current_config = yaml.load(conf, Loader=yaml.SafeLoader)
         return current_config
     else:
@@ -30,7 +30,7 @@ def get_environment_config() -> dict:
 
 def set_config(config_dict, config_path="../../config.yaml") -> dict:
     if os.path.isfile(CONFIG_PATH):
-        with open(config_path, "r") as conf:
+        with open(CONFIG_PATH, "r") as conf:
             current_config = yaml.load(conf, Loader=yaml.SafeLoader)
         for key, value in config_dict.items():
             current_config[key] = value

@@ -11,10 +11,6 @@ import numpy as np
 import pickle
 
 
-
-
-
-
 def predict(new_csv: str, start_date:str, end_date:str):
     '''
     :param new_csv:

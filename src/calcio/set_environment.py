@@ -15,13 +15,6 @@ from utils import load_model
  4. Обновить результаты
 """
 
-
-pd.options.display.max_columns = 50
-pd.options.display.max_rows = 100
-print(pd.__version__)
-print(np.__version__)
-
-
 def set_environment(destination_folder="../../"):
     # Развертывание окружения
     # 1. Загружаем все словари и эмбеддинги word2 vec
