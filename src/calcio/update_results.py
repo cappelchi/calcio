@@ -16,7 +16,7 @@ def update_results(folder:str, start_date:str, end_date:str):
     '''
 
     main_folder = get_environment_config()["destination_folder"]
-    data_df = load_dataframe(main_folder  + folder, start_date = start_date, end_date = end_date)
+    data_df = load_dataframe(folder, start_date = start_date, end_date = end_date)
     print("Загрузилось матчей: ", len(data_df))
     data_df = apply_season_dict(data_df)
     data_df = apply_token_filter(data_df)
