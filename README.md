@@ -10,14 +10,14 @@ calcio --set-environment -f ./calcio_folder
     - тип:  HOME, DRAW, AWAY
     - версия: 1, 2, ...<br>
 
-calcio --change-model --model_type AWAY --version 10
-calcio --change-model -m AWAY -v 10
+calcio --change-model --model_type AWAY --version 10<br>
+calcio --change-model -m AWAY -v 10<br>
 
 3. поменять эмбеддинги word2vec:
     - name: word2vec_220811<br>
 
-calcio --load-w2v --w2v_name word2vec_220811
-calcio --load-w2v --w word2vec_220811
+calcio --load-w2v --w2v_name word2vec_220811<br>
+calcio --load-w2v --w word2vec_220811<br>
 
 4. запустить предикт:
     - folder: /path/to/folder
