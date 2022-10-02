@@ -179,6 +179,7 @@ def apply_season_dict(data_df: pd.DataFrame) -> pd.DataFrame:
     dict_folder = get_environment_config()["destination_folder"]
     with open(dict_folder + "season_dict.pickle", "rb") as pkl:
         season_dict = pickle.load(pkl)
+    data_df['Season'] = data_df['Season'].astype(str)
     data_df[~data_df.Season.isin(season_dict)].to_csv(
         dict_folder + "reject_by_season.rej"
     )
