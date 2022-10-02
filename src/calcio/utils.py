@@ -162,8 +162,8 @@ def load_dataframe(folder: str, start_date="", end_date="") -> pd.DataFrame:
         map(functools.partial(pd.read_csv, sep=";", compression=None), data_csv_list),
         ignore_index=True,
     )
-    data_df[["date", "times_ext"]] = data_df.Time.str.split(expand=True)
-    data_df = data_df.drop(["Time", "times_ext"], axis="columns")
+    data_df[["date", "times_ext"]] = data_df['BeginTime'].str.split(expand=True)
+    data_df = data_df.drop(['BeginTime', 'times_ext'], axis="columns")
     data_df.date = pd.to_datetime(data_df["date"], dayfirst=True)
     data_df = data_df.sort_values(by="date").reset_index(drop=True)
     data_df.HomeId = data_df.HomeId.astype(int)
@@ -325,14 +325,14 @@ def idx_recursive(
 
 def prepare_for_update(data_df: pd.DataFrame) -> pd.DataFrame:
     print("Обрабатываю результат матча....")
-    data_df["Score1"] = data_df["Score1"].astype(int)
-    data_df["Score2"] = data_df["Score2"].astype(int)
-    data_df["sum_score"] = data_df["Score1"] + data_df["Score2"]
+    data_df["Result1"] = data_df["Result1"].astype(int)
+    data_df["Result2"] = data_df["Result2"].astype(int)
+    data_df["sum_score"] = data_df["Result1"] + data_df["Result2"]
     data_df["sum_score_k"] = [
         1 if score_k < 11 else score_k / 10 for score_k in data_df["sum_score"]
     ]
-    data_df["home_score_adj"] = (data_df["Score1"] / data_df["sum_score_k"]).astype(int)
-    data_df["away_score_adj"] = (data_df["Score2"] / data_df["sum_score_k"]).astype(int)
+    data_df["home_score_adj"] = (data_df["Result1"] / data_df["sum_score_k"]).astype(int)
+    data_df["away_score_adj"] = (data_df["Result2"] / data_df["sum_score_k"]).astype(int)
     data_df["score_adj"] = (
         data_df["home_score_adj"].astype(str)
         + "-"
