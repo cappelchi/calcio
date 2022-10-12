@@ -6,6 +6,7 @@ from utils import set_league_and_rest
 from utils import prepare_for_update
 from utils import tokenize_result
 from utils import update_matches_connections
+from utils import update_dict_with_new_matches_tokens
 import pickle
 
 def update_results(folder:str, start_date:str, end_date:str):
@@ -20,10 +21,12 @@ def update_results(folder:str, start_date:str, end_date:str):
     print("Загрузилось матчей: ", len(data_df))
     data_df = apply_season_dict(data_df)
     data_df = apply_token_filter(data_df)
-    data_df = set_league_and_rest(data_df)
+    updated_dict = update_matches_connections(data_df)
+    data_df = set_league_and_rest(data_df, updated_dict)
     data_df = prepare_for_update(data_df)
     data_df = tokenize_result(data_df)
-    updated_dict = update_matches_connections(data_df)
+    updated_dict = update_dict_with_new_matches_tokens(data_df, updated_dict)
+
     print('Сохраняется словарь истории матчей...')
     with open(main_folder + 'team_GId_dict.pickle', 'wb') as pkl:
         pickle.dump(updated_dict, pkl, protocol=pickle.HIGHEST_PROTOCOL)

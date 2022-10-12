@@ -7,6 +7,7 @@ from utils import apply_season_dict
 from utils import set_league_and_rest
 from utils import set_current_idx
 from utils import idx_recursive
+from utils import  update_matches_connections
 import numpy as np
 import pickle
 
@@ -17,27 +18,24 @@ def predict(new_csv: str, start_date:str, end_date:str):
     :param start_date:
     :param end_date:
     '''
-    main_folder = get_environment_config()["destination_folder"]
     data_df = load_dataframe(new_csv, start_date = start_date, end_date = end_date)
     print("Загрузилось матчей: ", len(data_df))
     data_df = apply_season_dict(data_df)
     data_df = apply_token_filter(data_df)
-    data_df = set_league_and_rest(data_df)
+    updated_dict = update_matches_connections(data_df)
+    data_df = set_league_and_rest(data_df, updated_dict)
     data_df = set_current_idx(data_df)
-    ##################################
-    with open(main_folder + "team_GId_dict.pickle", "rb") as ttd:
-        team_GId_dict = pickle.load(ttd)
-    ##################################
+
     look_back = 5
     input_list = []
-    for idx in data_df['HomeId']:
-        input_list.append(idx_recursive(idx, -1, look_back, main_dict = team_GId_dict)[::-1])
+    for idx in zip(data_df['Id'], data_df['HomeId']):
+        input_list.append(idx_recursive(idx[1], idx[0], look_back, main_dict = updated_dict)[::-1])
     data_df[[f'home_input_{num}' for num in range(1, 1 + look_back)]] = input_list
     ##################################
     look_back = 5
     input_list = []
-    for idx in data_df['AwayId']:
-        input_list.append(idx_recursive(idx, -1, look_back, main_dict = team_GId_dict)[::-1])
+    for idx in zip(data_df['Id'], data_df['AwayId']):
+        input_list.append(idx_recursive(idx[1], idx[0], look_back, main_dict = updated_dict)[::-1])
     data_df[[f'away_input_{num}' for num in range(1, 1 + look_back)]] = input_list
     ##################################
     names = ['home_idx_current',
