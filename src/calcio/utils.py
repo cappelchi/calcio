@@ -8,7 +8,7 @@ import yaml
 import neptune.new as neptune
 
 pd.options.mode.chained_assignment = None
-CONFIG_PATH = '../../calcio/config.yaml'
+CONFIG_PATH = './calcio/config.yaml'
 
 
 def get_credential(frmwork="neptune_team"):
