@@ -542,10 +542,10 @@ def update_dict_with_new_matches_tokens(data_df: pd.DataFrame, team_GId_dict: di
             errors += 1
             errors_list.append([awayID, matchID])
 
-        print("Ошибок добавления индекса в словарь: ", errors)
-        if errors > 0:
-            pd.DataFrame(errors_list, columns=["teamID", "matchID"]).to_csv(
-                dict_folder + "index_errors.csv"
-            )
+    print("Ошибок добавления индекса в словарь: ", errors)
+    if errors > 0:
+        pd.DataFrame(errors_list, columns=["teamID", "matchID"]).to_csv(
+            dict_folder + "index_errors.csv"
+        )
 
     return team_GId_dict
