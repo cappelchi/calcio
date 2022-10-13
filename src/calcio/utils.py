@@ -514,7 +514,7 @@ def update_matches_connections(data_df: pd.DataFrame) -> dict:
     return team_GId_dict
 
 
-def update_dict_with_new_matches_tokens(data_df: pd.DataFrame, team_GId_dict: dict):
+def update_dict_with_new_matches_tokens(data_df: pd.DataFrame, team_GId_dict: dict) -> dict:
     """
     :param data_df:
     :param team_GId_dict:
@@ -531,11 +531,13 @@ def update_dict_with_new_matches_tokens(data_df: pd.DataFrame, team_GId_dict: di
         matchID = info[2]
         homeIDX = info[3]
         awayIDX = info[4]
-        team_GId_dict[homeID][matchID] += [homeIDX]
+        if len(team_GId_dict[homeID][matchID]) < 3:
+            team_GId_dict[homeID][matchID] += [homeIDX]
         if len(team_GId_dict[homeID][matchID]) > 3:
             errors += 1
             errors_list.append([homeID, matchID])
-        team_GId_dict[awayID][matchID] += [awayIDX]
+        if len(team_GId_dict[awayID][matchID]) < 3:
+            team_GId_dict[awayID][matchID] += [awayIDX]
         if len(team_GId_dict[awayID][matchID]) > 3:
             errors += 1
             errors_list.append([awayID, matchID])
@@ -546,4 +548,4 @@ def update_dict_with_new_matches_tokens(data_df: pd.DataFrame, team_GId_dict: di
                 dict_folder + "index_errors.csv"
             )
 
-        return team_GId_dict
+    return team_GId_dict

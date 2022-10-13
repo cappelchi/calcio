@@ -62,6 +62,7 @@ def predict(new_csv: str, start_date:str, end_date:str):
     model_path = get_environment_config()['tf_model'][0]
     model = load_model(model_path)
     data_df['predict'] = model.predict(X_input)
-    data_df.to_csv(new_csv + 'predict.out')
-    print('Предикт посчитан и загружен в '  + new_csv + 'predict.out')
+    main_folder = get_environment_config()["destination_folder"]
+    data_df.to_csv(main_folder + 'predict.out')
+    print('Предикт посчитан и загружен в '  + main_folder + 'predict.out')
     ##################################
