@@ -9,6 +9,7 @@ import neptune.new as neptune
 
 pd.options.mode.chained_assignment = None
 CONFIG_PATH = './calcio/config.yaml'
+MODEL_VESRION = '221101'
 
 
 def get_credential(frmwork="neptune_team"):
@@ -110,12 +111,12 @@ def load_model(folder_name: str, model_type="HOME", model_num=1) -> list:
     path_to_model = folder_name + "model.tar.gz"
     _, api_key = get_credential()
     neptune_model = f"FOOT-" + model_type
-    neptune_model_version = f"FOOT-" + model_type + "-" + str(model_num)
+    neptune_model_version = f"FOOT-" + model_type + MODEL_VESRION + "-" + str(model_num)
     model_version = neptune.init_model_version(
         project="scomesse/football",
         model=neptune_model,
         api_token=api_key,
-        version=neptune_model_version,
+        with_id=neptune_model_version,
     )
     try:
         print(f"Загружаем модель {model_type} n.{model_num}")

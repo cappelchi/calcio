@@ -5,6 +5,7 @@ from utils import unpack_tar
 from utils import neptune_download
 from utils import load_model
 
+DATA_VERSION = 'data_221101/'
 """
 Команды скрипта
  1. Развернуть окружение
@@ -26,8 +27,8 @@ def set_environment(destination_folder:str):
         filemode="w",
     )
     env_dict = {
-        "data/team_GId_dict": "team_GId_dict.pickle",
-        "data/word2vec_220811": "w2v_model.tar.gz",
+        DATA_VERSION + "team_GId_dict": "team_GId_dict.pickle",
+        DATA_VERSION + "word2vec": "word2vec.wordvectors.tar.gz",
     }
 
     create_environment_config(
@@ -37,13 +38,13 @@ def set_environment(destination_folder:str):
         saved_name, file_name = env
         print(f"Скачиваем: {file_name}...{cnt + 1}/{len(env_dict)}")
         neptune_download(saved_name, destination_folder + file_name)
-        if saved_name != "data/word2vec_220811":
+        if saved_name.split("/")[1] != "word2vec":
             create_environment_config(
                 {saved_name.split("/")[1]: destination_folder + file_name}
             )
 
     create_environment_config(
-        {"word2vec": unpack_tar(destination_folder + env_dict["data/word2vec_220811"])}
+        {"word2vec": unpack_tar(destination_folder + env_dict[VERSION + "word2vec"])}
     )
     model_num = 1
     model_type = "HOME"
