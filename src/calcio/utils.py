@@ -158,11 +158,16 @@ def load_dataframe(folder: str, start_date="", end_date="") -> pd.DataFrame:
         folder + str(dd).replace("-", "") + ".csv"
         for dd in pd.date_range(start=start_date, end=end_date).date
     ]
+    # Search for match hash duplicates
     data_df = pd.concat(
         map(functools.partial(pd.read_csv, sep=";", compression=None), data_csv_list),
         ignore_index=True,
     )
-    # Обновление
+    # Search for match hash duplicates
+    dups_list = list(data_df.Id.value_counts().index[data_df.Id.value_counts() > 1])
+    for dup in dups_list:
+        data_df.Id[data_df.Id == dup] = [id + str(cnt) for cnt, id in enumerate(data_df.Id[data_df.Id == dup])]
+    # Convert datetime to timestamp
     data_df["timestamp"] = (
         pd.to_datetime(data_df["BeginTime"], dayfirst=True).astype("int64") // 10**9
     )
@@ -252,6 +257,9 @@ def set_league_and_rest(data_df: pd.DataFrame, team_GId_dict: dict) -> pd.DataFr
 
 
 def set_current_idx(data_df: pd.DataFrame) -> pd.DataFrame:
+
+
+
     dict_folder = get_environment_config()["destination_folder"]
     with open(dict_folder + "idx_home_current_dict.pickle", "rb") as pkl:
         idx_home_current_dict = pickle.load(pkl)
@@ -356,52 +364,63 @@ def prepare_for_update(data_df: pd.DataFrame) -> pd.DataFrame:
     return data_df
 
 
+def get_match_token_dict():
+    match_cat_dict4 = {}
+    cnt4 = 1
+    for home_score in range(11):
+        for away_score in range(11):
+            for home_place in range(2):
+                for regular_match in range(2):
+                    for rest_time in range(3):
+                        if (home_score + away_score) < 11:
+                            match_cat_dict4[
+                                str(home_score) + '-' + \
+                                str(away_score) + ':' + \
+                                str(home_place) + ':' + \
+                                str(regular_match) + ':' + \
+                                str(rest_time)
+                                ] = cnt4
+                            cnt4 += 1
+    return  match_cat_dict4
+
 def tokenize_result(data_df: pd.DataFrame) -> pd.DataFrame:
     print("Токенизирую результаты...")
-    dict_folder = get_environment_config()["destination_folder"]
-    with open(dict_folder + "idx_home_dict.pickle", "rb") as pkl:
-        idx_home_dict = pickle.load(pkl)
-    with open(dict_folder + "idx_away_dict.pickle", "rb") as pkl:
-        idx_away_dict = pickle.load(pkl)
-    #####################################################
-    data_df["home_idx"] = [
-        idx_home_dict[
-            info[0] + ":" + str(info[1]) + ":" + str(info[2]) + ":" + str(info[3])
-        ]
-        if info[0] + ":" + str(info[1]) + ":" + str(info[2]) + ":" + str(info[3])
-        in idx_home_dict
-        else 0
-        for info in data_df[
-            [
-                "score_adj",
-                "resident_league_home",
-                "resident_league_away",
-                "team_rest_home_adj",
-            ]
-        ].values
-    ]
-    data_df["home_idx"] = data_df["home_idx"].astype(int)
-    #####################################################
-    data_df["away_idx"] = [
-        idx_away_dict[
-            info[0] + ":" + str(info[1]) + ":" + str(info[2]) + ":" + str(info[3])
-        ]
-        if info[0] + ":" + str(info[1]) + ":" + str(info[2]) + ":" + str(info[3])
-        in idx_away_dict
-        else 0
-        for info in data_df[
-            [
-                "score_adj",
-                "resident_league_home",
-                "resident_league_away",
-                "team_rest_away_adj",
-            ]
-        ].values
-    ]
-    data_df["away_idx"] = data_df["away_idx"].astype(int)
-    #####################################################
-    zero_token = (data_df["home_idx"] == 0).sum() + (data_df["away_idx"] == 0).sum()
-    print("Токенизировано в 0:", zero_token)
+    # Разделяю на игры регулярки и остальное
+    non_regular_slice = \
+        (data_df.League.str.contains('copa')) | \
+        (data_df.League.str.contains('coppa')) | \
+        (data_df.League.str.contains('cup')) | \
+        (data_df.League.str.contains('final')) | \
+        (data_df.League.str.contains('friend')) | \
+        (data_df.League.str.contains('play-off')) | \
+        (data_df.League.str.contains('qual')) | \
+        (data_df.League.str.contains('tourn')) | \
+        (data_df.League.str.contains('pokal'))
+    data_df['local_match'] = 1
+    data_df['local_match'][non_regular_slice] = 0
+
+    # Кодирую фичи в слово для хоум и авэй ################
+    input_list = []
+    for info in tqdm(zip(data_df['score_adj'], data_df['local_match'], data_df['team_rest_home_adj']),
+                     total=len(data_df)):
+        cat_key = info[0] + ':' + '0' + ':' + str(info[1]) + ':' + str(info[2])
+        input_list.append(cat_key)
+    data_df['home_token4'] = input_list
+
+    input_list = []
+    for info in tqdm(zip(data_df['score_adj'], data_df['local_match'], data_df['team_rest_away_adj']),
+                     total=len(data_df)):
+        cat_key = info[0] + ':' + '1' + ':' + str(info[1]) + ':' + str(info[2])
+        input_list.append(cat_key)
+    data_df['away_token4'] = input_list
+    #####################
+    #Токенизирую слова фичей (получаю токен)
+    #Сначала деляю словарик токенов (всех возможных исходов)
+    match_cat_dict4 = get_match_token_dict()
+    # Получаю токены по словарю
+    data_df['home_idx'] = [match_cat_dict4[idx] for idx in tqdm(data_df['home_token4'], total=len(data_df))]
+    data_df['away_idx'] = [match_cat_dict4[idx] for idx in tqdm(data_df['away_token4'], total=len(data_df))]
+
     return data_df
 
 

@@ -20,11 +20,11 @@ def predict(new_csv: str, start_date:str, end_date:str):
     '''
     data_df = load_dataframe(new_csv, start_date = start_date, end_date = end_date)
     print("Загрузилось матчей: ", len(data_df))
-    data_df = apply_season_dict(data_df)
-    data_df = apply_token_filter(data_df)
+    #data_df = apply_season_dict(data_df)
+    #data_df = apply_token_filter(data_df)
     updated_dict = update_matches_connections(data_df)
     data_df = set_league_and_rest(data_df, updated_dict)
-    data_df = set_current_idx(data_df)
+    #data_df = set_current_idx(data_df)
 
     look_back = 5
     input_list = []
@@ -38,18 +38,18 @@ def predict(new_csv: str, start_date:str, end_date:str):
         input_list.append(idx_recursive(idx[1], idx[0], look_back, main_dict = updated_dict)[::-1])
     data_df[[f'away_input_{num}' for num in range(1, 1 + look_back)]] = input_list
     ##################################
-    names = ['home_idx_current',
+    names = [
              'home_input_1',
              'home_input_2',
              'home_input_3',
              'home_input_4',
              'home_input_5',
-             'away_idx_current',
              'away_input_1',
              'away_input_2',
              'away_input_3',
              'away_input_4',
-             'away_input_5']
+             'away_input_5'
+    ]
     ##################################
     word_vectors = get_environment_config()['word2vec'][1].replace('.vectors.npy', '')
     print('Загружаю вектора w2v: ', word_vectors)

@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 import logging
 from os.path import realpath
 from utils import create_environment_config
@@ -29,12 +27,6 @@ def set_environment(destination_folder:str):
     )
     env_dict = {
         "data/team_GId_dict": "team_GId_dict.pickle",
-        "data/team_league_dict": "team_league_dict.pickle",
-        "data/season_dict": "season_dict.pickle",
-        "data/idx_home_current_dict": "idx_home_current_dict.pickle",
-        "data/idx_away_current_dict": "idx_away_current_dict.pickle",
-        "data/idx_home_dict": "idx_home_dict.pickle",
-        "data/idx_away_dict": "idx_away_dict.pickle",
         "data/word2vec_220811": "w2v_model.tar.gz",
     }
 
