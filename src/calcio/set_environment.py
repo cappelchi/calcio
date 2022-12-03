@@ -46,7 +46,7 @@ def set_environment(destination_folder:str):
     create_environment_config(
         {"word2vec": unpack_tar(destination_folder + env_dict[DATA_VERSION + "word2vec"])}
     )
-    model_num = 1
+    model_num = 3
     model_type = "HOME"
     create_environment_config(
         {
