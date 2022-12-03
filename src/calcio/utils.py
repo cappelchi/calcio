@@ -6,6 +6,7 @@ import functools
 import pandas as pd
 import yaml
 import neptune.new as neptune
+from tqdm import tqdm
 
 pd.options.mode.chained_assignment = None
 CONFIG_PATH = './calcio/config.yaml'
@@ -179,49 +180,6 @@ def load_dataframe(folder: str, start_date="", end_date="") -> pd.DataFrame:
     return data_df
 
 
-def apply_season_dict(data_df: pd.DataFrame) -> pd.DataFrame:
-    """
-    :param data_df:
-    :return:
-    """
-    dict_folder = get_environment_config()["destination_folder"]
-    with open(dict_folder + "season_dict.pickle", "rb") as pkl:
-        season_dict = pickle.load(pkl)
-    data_df["Season"] = data_df["Season"].astype(str)
-    data_df[~data_df.Season.isin(season_dict)].to_csv(
-        dict_folder + "reject_by_season.rej"
-    )
-    data_df = data_df[data_df.Season.isin(season_dict)]
-    print("Фильтр сезнов осталось: ", len(data_df))
-    data_df["Season"] = [season_dict[seas] for seas in data_df.Season]
-    return data_df
-
-
-def apply_token_filter(data_df: pd.DataFrame) -> pd.DataFrame:
-    dict_folder = get_environment_config()["destination_folder"]
-    with open(dict_folder + "team_league_dict.pickle", "rb") as pkl:
-        team_league_dict = pickle.load(pkl)
-    valid_match = [
-        (str(hid) + ":" + season in team_league_dict)
-        & (str(aid) + ":" + season in team_league_dict)
-        for hid, aid, season in zip(data_df.HomeId, data_df.AwayId, data_df.Season)
-    ]
-    data_df[[not (mv) for mv in valid_match]].to_csv(
-        dict_folder + "reject_by_token.rej"
-    )
-    data_df = data_df[valid_match]
-    data_df.loc[:, ("resident_league_home")] = [
-        team_league_dict[str(rlh) + ":" + seas]
-        for rlh, seas in zip(data_df.HomeId, data_df.Season)
-    ]
-    data_df.loc[:, ("resident_league_away")] = [
-        team_league_dict[str(rla) + ":" + seas]
-        for rla, seas in zip(data_df.AwayId, data_df.Season)
-    ]
-    print("Фильтр токенизации истории, осталось: ", len(data_df))
-    return data_df
-
-
 def set_league_and_rest(data_df: pd.DataFrame, team_GId_dict: dict) -> pd.DataFrame:
     """
 
@@ -255,51 +213,6 @@ def set_league_and_rest(data_df: pd.DataFrame, team_GId_dict: dict) -> pd.DataFr
     ]
     print("Время между матчами определено")
     return data_df
-
-
-def set_current_idx(data_df: pd.DataFrame) -> pd.DataFrame:
-
-
-
-    dict_folder = get_environment_config()["destination_folder"]
-    with open(dict_folder + "idx_home_current_dict.pickle", "rb") as pkl:
-        idx_home_current_dict = pickle.load(pkl)
-    with open(dict_folder + "idx_away_current_dict.pickle", "rb") as pkl:
-        idx_away_current_dict = pickle.load(pkl)
-
-    valid_idx = [
-        (home + ":" + away + ":" + str(rest_home) in idx_home_current_dict)
-        & (home + ":" + away + ":" + str(rest_away) in idx_away_current_dict)
-        for home, away, rest_home, rest_away in zip(
-            data_df.resident_league_home,
-            data_df.resident_league_away,
-            data_df.team_rest_home_adj,
-            data_df.team_rest_away_adj,
-        )
-    ]
-    data_df[[not (mv) for mv in valid_idx]].to_csv(
-        dict_folder + "reject_by_current_idx.rej"
-    )
-    data_df = data_df[valid_idx]
-    print("Фильтр токенезации текущего матча, осталось: ", len(data_df))
-    data_df["home_idx_current"] = [
-        idx_home_current_dict[home + ":" + away + ":" + str(rest_home)]
-        for home, away, rest_home in zip(
-            data_df.resident_league_home,
-            data_df.resident_league_away,
-            data_df.team_rest_home_adj,
-        )
-    ]
-    data_df["away_idx_current"] = [
-        idx_away_current_dict[home + ":" + away + ":" + str(rest_away)]
-        for home, away, rest_away in zip(
-            data_df.resident_league_home,
-            data_df.resident_league_away,
-            data_df.team_rest_away_adj,
-        )
-    ]
-    return data_df
-
 
 
 def idx_recursive(

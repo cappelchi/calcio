@@ -2,10 +2,8 @@ from tensorflow.keras.models import load_model
 from gensim.models import KeyedVectors
 from utils import get_environment_config
 from utils import load_dataframe
-from utils import apply_token_filter
-from utils import apply_season_dict
 from utils import set_league_and_rest
-from utils import set_current_idx
+
 from utils import idx_recursive
 from utils import  update_matches_connections
 import numpy as np
@@ -20,11 +18,8 @@ def predict(new_csv: str, start_date:str, end_date:str):
     '''
     data_df = load_dataframe(new_csv, start_date = start_date, end_date = end_date)
     print("Загрузилось матчей: ", len(data_df))
-    #data_df = apply_season_dict(data_df)
-    #data_df = apply_token_filter(data_df)
     updated_dict = update_matches_connections(data_df)
     data_df = set_league_and_rest(data_df, updated_dict)
-    #data_df = set_current_idx(data_df)
 
     look_back = 5
     input_list = []
@@ -51,7 +46,7 @@ def predict(new_csv: str, start_date:str, end_date:str):
              'away_input_5'
     ]
     ##################################
-    word_vectors = get_environment_config()['word2vec'][1].replace('.vectors.npy', '')
+    word_vectors = get_environment_config()['word2vec'][0]
     print('Загружаю вектора w2v: ', word_vectors)
     wv = KeyedVectors.load(word_vectors, mmap='r')
     idx_arr = np.zeros(max(wv.key_to_index) + 1)
