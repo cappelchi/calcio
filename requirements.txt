@@ -5,3 +5,4 @@ numpy
 click
 tqdm
 tensorflow
+keras>=3.11.0 # not directly required, pinned by Snyk to avoid a vulnerability
